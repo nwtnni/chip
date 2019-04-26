@@ -111,7 +111,12 @@ pub enum Asm {
 
 impl From<u16> for Asm {
     fn from(op: u16) -> Self {
-        match ((op >> 12) as u8, (op >> 8) as u8, (op >> 4) as u8, op as u8) {
+
+        macro_rules! nibble {
+            ($n:expr) => ((op >> (4 * $n) & 0x000F) as u8)
+        }
+
+        match (nibble!(3), nibble!(2), nibble!(1), nibble!(0)) {
         | (0x0, 0x0, 0xE, 0x0) => Asm::CLS,
         | (0x0, 0x0, 0xE, 0xE) => Asm::RET,
         | (0x0,   _,   _,   _) => Asm::SYS(op.into()),
