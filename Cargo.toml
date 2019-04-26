@@ -6,4 +6,3 @@ edition = "2018"
 
 [dependencies]
 termion = "1.5.1"
-ux = "0.1.3"
