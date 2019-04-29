@@ -2,7 +2,6 @@ use crate::mem;
 use crate::reg;
 
 pub enum Asm {
-
     /// Jump to machine code routine at address
     SYS(mem::Addr),
 
@@ -122,11 +121,11 @@ impl From<u16> for Asm {
         | (0x0,   _,   _,   _) => Asm::SYS(op.into()),
         | (0x1,   _,   _,   _) => Asm::JP(op.into()),
         | (0x2,   _,   _,   _) => Asm::CALL(op.into()),
-        | (0x3,   x,   m,   n) => Asm::SEC(x.into(), m << 4 & n),
-        | (0x4,   x,   m,   n) => Asm::SNEC(x.into(), m << 4 & n),
+        | (0x3,   x,   _,   _) => Asm::SEC(x.into(), op as u8),
+        | (0x4,   x,   _,   _) => Asm::SNEC(x.into(), op as u8),
         | (0x5,   x,   y, 0x0) => Asm::SER(x.into(), y.into()),
-        | (0x6,   x,   m,   n) => Asm::LDC(x.into(), m << 4 & n),
-        | (0x7,   x,   m,   n) => Asm::ADDC(x.into(), m << 4 & n),
+        | (0x6,   x,   _,   _) => Asm::LDC(x.into(), op as u8),
+        | (0x7,   x,   _,   _) => Asm::ADDC(x.into(), op as u8),
         | (0x8,   x,   y, 0x0) => Asm::LDR(x.into(), y.into()),
         | (0x8,   x,   y, 0x1) => Asm::OR(x.into(), y.into()),
         | (0x8,   x,   y, 0x2) => Asm::AND(x.into(), y.into()),
@@ -139,7 +138,7 @@ impl From<u16> for Asm {
         | (0x9,   x,   y, 0x0) => Asm::SNER(x.into(), y.into()),
         | (0xA,   _,   _,   _) => Asm::LDI(op.into()),
         | (0xB,   _,   _,   _) => Asm::JO(op.into()),
-        | (0xC,   x,   m,   n) => Asm::RND(x.into(), m << 4 & n),
+        | (0xC,   x,   _,   _) => Asm::RND(x.into(), op as u8),
         | (0xD,   x,   y,   n) => Asm::DRW(x.into(), y.into(), n),
         | (0xE,   x, 0x9, 0xE) => Asm::SKP(x.into()),
         | (0xE,   x, 0xA, 0x1) => Asm::SKNP(x.into()),
