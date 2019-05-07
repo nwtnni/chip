@@ -1,4 +1,4 @@
 mod cpu;
 mod mem;
-mod asm;
+pub mod asm;
 mod reg;

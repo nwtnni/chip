@@ -1,6 +1,7 @@
 use crate::mem;
 use crate::reg;
 
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Asm {
     /// Jump to machine code routine at address
     SYS(mem::Addr),
@@ -151,7 +152,7 @@ impl From<u16> for Asm {
         | (0xF,   x, 0x3, 0x3) => Asm::LDB(x.into()),
         | (0xF,   x, 0x5, 0x5) => Asm::WR(x.into()),
         | (0xF,   x, 0x6, 0x5) => Asm::RD(x.into()),
-        | _ => panic!("[ASSEMBLY ERROR]: invalid opcode"),
+        | _ => panic!("[ASSEMBLY ERROR]: invalid opcode {:x}", op),
         }
     }
 }
