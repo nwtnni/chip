@@ -8,6 +8,12 @@ impl From<u16> for Addr {
     }
 }
 
+impl From<Addr> for u16 {
+    fn from(addr: Addr) -> Self {
+        addr.0
+    }
+}
+
 #[derive(Clone)]
 pub struct Mem(Box<[u8; 4096]>);
 

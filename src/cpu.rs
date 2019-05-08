@@ -9,6 +9,12 @@ impl From<u8> for Reg {
     }
 }
 
+impl From<Reg> for u8 {
+    fn from(reg: Reg) -> Self {
+        reg.0
+    }
+}
+
 #[derive(Debug)]
 pub struct CPU {
     /// Program counter
