@@ -1,5 +1,5 @@
+use crate::cpu;
 use crate::mem;
-use crate::reg;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Asm {
@@ -22,91 +22,91 @@ pub enum Asm {
     CALL(mem::Addr),
 
     /// Skip next instruction if register contents equal constant
-    SEC(reg::Reg, u8),
+    SEC(cpu::Reg, u8),
 
     /// Skip next instruction if register contents do not equal constant
-    SNEC(reg::Reg, u8),
+    SNEC(cpu::Reg, u8),
 
     /// Skip next instruction if register contents are equal
-    SER(reg::Reg, reg::Reg),
+    SER(cpu::Reg, cpu::Reg),
 
     /// Skip next instruction if register contents are not equal
-    SNER(reg::Reg, reg::Reg),
+    SNER(cpu::Reg, cpu::Reg),
 
     /// Load constant into register
-    LDC(reg::Reg, u8),
+    LDC(cpu::Reg, u8),
 
     /// Load register contents into register
-    LDR(reg::Reg, reg::Reg), 
+    LDR(cpu::Reg, cpu::Reg), 
 
     /// Load address into register I
     LDI(mem::Addr),
 
     /// Destructive constant addition
-    ADDC(reg::Reg, u8),
+    ADDC(cpu::Reg, u8),
 
     /// Destructive register addition into I
-    ADDI(reg::Reg),
+    ADDI(cpu::Reg),
 
     /// Destructive register addition
-    ADDR(reg::Reg, reg::Reg),
+    ADDR(cpu::Reg, cpu::Reg),
 
     /// Destructive register bitwise AND
-    AND(reg::Reg, reg::Reg),
+    AND(cpu::Reg, cpu::Reg),
 
     /// Destructive register bitwise OR
-    OR(reg::Reg, reg::Reg), 
+    OR(cpu::Reg, cpu::Reg), 
 
     /// Destructive register bitwise XOR
-    XOR(reg::Reg, reg::Reg), 
+    XOR(cpu::Reg, cpu::Reg), 
 
     /// Destructive left-to-right register subtraction
-    SUB(reg::Reg, reg::Reg),
+    SUB(cpu::Reg, cpu::Reg),
 
     /// Destructive right-to-left register subtraction
-    SUBN(reg::Reg, reg::Reg),
+    SUBN(cpu::Reg, cpu::Reg),
 
     /// Shift right by one
-    SHR(reg::Reg, reg::Reg),
+    SHR(cpu::Reg, cpu::Reg),
 
     /// Shift left by one
-    SHL(reg::Reg, reg::Reg),
+    SHL(cpu::Reg, cpu::Reg),
 
     /// Generate random number and bitwise AND with constant
-    RND(reg::Reg, u8),
+    RND(cpu::Reg, u8),
 
     /// Display n-byte sprite
-    DRW(reg::Reg, reg::Reg, u8),
+    DRW(cpu::Reg, cpu::Reg, u8),
 
     /// Skip if key with value is pressed
-    SKP(reg::Reg),
+    SKP(cpu::Reg),
 
     /// Skip if key with value is not pressed
-    SKNP(reg::Reg),
+    SKNP(cpu::Reg),
 
     /// Load value of delay timer into register
-    LDTR(reg::Reg),
+    LDTR(cpu::Reg),
 
     /// Load value of key press
-    LDK(reg::Reg),
+    LDK(cpu::Reg),
 
     /// Load value of register into delay timer
-    LDRT(reg::Reg),
+    LDRT(cpu::Reg),
 
     /// Load value of register into sound timer
-    LDRS(reg::Reg),
+    LDRS(cpu::Reg),
 
     /// Set I to location of sprite for digit
-    LDS(reg::Reg),
+    LDS(cpu::Reg),
 
     /// Store BCD representation of register in memory locations I, I + 1, I + 2
-    LDB(reg::Reg),
+    LDB(cpu::Reg),
 
     /// Write registers V0 through Reg in memory starting at location I
-    WR(reg::Reg),
+    WR(cpu::Reg),
 
     /// Read registers V0 through Reg from memory starting at location I
-    RD(reg::Reg),
+    RD(cpu::Reg),
 }
 
 impl From<u16> for Asm {
