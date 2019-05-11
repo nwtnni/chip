@@ -1,3 +1,4 @@
+use crate::asm;
 use crate::ram;
 use crate::stack;
 
@@ -24,7 +25,7 @@ pub struct CPU {
     pc: ram::Addr,
 
     /// Stack pointer
-    sp: u16, 
+    sp: stack::Addr, 
 
     /// Sound timer
     st: u8,
@@ -41,9 +42,15 @@ pub struct CPU {
 
 impl CPU {
     fn step(&mut self, ram: &mut ram::Mem, stack: &mut stack::Mem) {
-        
-        let hi = ram[self.pc];
-        let lo = ram[self.pc + 1];
 
+        let hi = ram[self.pc] as u16;
+        let lo = ram[self.pc + 1] as u16;
+        let op = asm::Asm::from(hi << 8 | lo);
+
+        self.pc += 2;
+
+        match op {
+        | _ => unimplemented!(),
+        }
     }
 }
