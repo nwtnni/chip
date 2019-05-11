@@ -15,9 +15,6 @@ pub enum Asm {
     /// Jump to address
     JP(mem::Addr),
 
-    /// Jump to address plus offset V0
-    JO(mem::Addr),
-
     /// Call subroutine at address
     CALL(mem::Addr),
 
@@ -30,47 +27,47 @@ pub enum Asm {
     /// Skip next instruction if register contents are equal
     SER(cpu::Reg, cpu::Reg),
 
-    /// Skip next instruction if register contents are not equal
-    SNER(cpu::Reg, cpu::Reg),
-
     /// Load constant into register
     LDC(cpu::Reg, u8),
-
-    /// Load register contents into register
-    LDR(cpu::Reg, cpu::Reg), 
-
-    /// Load address into register I
-    LDI(mem::Addr),
 
     /// Destructive constant addition
     ADDC(cpu::Reg, u8),
 
-    /// Destructive register addition into I
-    ADDI(cpu::Reg),
+    /// Load register contents into register
+    LDR(cpu::Reg, cpu::Reg),
 
-    /// Destructive register addition
-    ADDR(cpu::Reg, cpu::Reg),
+    /// Destructive register bitwise OR
+    OR(cpu::Reg, cpu::Reg),
 
     /// Destructive register bitwise AND
     AND(cpu::Reg, cpu::Reg),
 
-    /// Destructive register bitwise OR
-    OR(cpu::Reg, cpu::Reg), 
-
     /// Destructive register bitwise XOR
-    XOR(cpu::Reg, cpu::Reg), 
+    XOR(cpu::Reg, cpu::Reg),
+
+    /// Destructive register addition
+    ADDR(cpu::Reg, cpu::Reg),
 
     /// Destructive left-to-right register subtraction
     SUB(cpu::Reg, cpu::Reg),
 
-    /// Destructive right-to-left register subtraction
-    SUBN(cpu::Reg, cpu::Reg),
-
     /// Shift right by one
     SHR(cpu::Reg, cpu::Reg),
 
+    /// Destructive right-to-left register subtraction
+    SUBN(cpu::Reg, cpu::Reg),
+
     /// Shift left by one
     SHL(cpu::Reg, cpu::Reg),
+
+    /// Skip next instruction if register contents are not equal
+    SNER(cpu::Reg, cpu::Reg),
+
+    /// Load address into register I
+    LDI(mem::Addr),
+
+    /// Jump to address plus offset V0
+    JO(mem::Addr),
 
     /// Generate random number and bitwise AND with constant
     RND(cpu::Reg, u8),
@@ -95,6 +92,9 @@ pub enum Asm {
 
     /// Load value of register into sound timer
     LDRS(cpu::Reg),
+
+    /// Destructive register addition into I
+    ADDI(cpu::Reg),
 
     /// Set I to location of sprite for digit
     LDS(cpu::Reg),
