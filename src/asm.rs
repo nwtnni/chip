@@ -1,10 +1,10 @@
 use crate::cpu;
-use crate::mem;
+use crate::ram;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Asm {
     /// Jump to machine code routine at address
-    SYS(mem::Addr),
+    SYS(ram::Addr),
 
     /// Clear screen
     CLS,
@@ -13,10 +13,10 @@ pub enum Asm {
     RET,
 
     /// Jump to address
-    JP(mem::Addr),
+    JP(ram::Addr),
 
     /// Call subroutine at address
-    CALL(mem::Addr),
+    CALL(ram::Addr),
 
     /// Skip next instruction if register contents equal constant
     SEC(cpu::Reg, u8),
@@ -64,10 +64,10 @@ pub enum Asm {
     SNER(cpu::Reg, cpu::Reg),
 
     /// Load address into register I
-    LDI(mem::Addr),
+    LDI(ram::Addr),
 
     /// Jump to address plus offset V0
-    JO(mem::Addr),
+    JO(ram::Addr),
 
     /// Generate random number and bitwise AND with constant
     RND(cpu::Reg, u8),

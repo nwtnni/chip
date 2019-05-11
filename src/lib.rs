@@ -1,3 +1,4 @@
 mod cpu;
-mod mem;
+mod ram;
 pub mod asm;
+mod stack;

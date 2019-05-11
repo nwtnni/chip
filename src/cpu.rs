@@ -1,3 +1,6 @@
+use crate::ram;
+use crate::stack;
+
 /// 4-bit general purpose register
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct Reg(u8);
@@ -18,7 +21,7 @@ impl From<Reg> for u8 {
 #[derive(Debug)]
 pub struct CPU {
     /// Program counter
-    pc: u16,
+    pc: ram::Addr,
 
     /// Stack pointer
     sp: u16, 
@@ -34,4 +37,11 @@ pub struct CPU {
 
     /// General purpose registers
     reg: [u8; 16],
+}
+
+impl CPU {
+    fn step(&mut self, ram: &mut ram::Mem, stack: &mut stack::Mem) {
+
+
+    }
 }

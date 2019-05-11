@@ -1,4 +1,4 @@
-/// Little-endian 12-bit memory address
+/// 12-bit memory address
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Addr(u16);
 
