@@ -8,9 +8,33 @@ impl From<u16> for Addr {
     }
 }
 
-impl From<Addr> for u16 {
-    fn from(addr: Addr) -> Self {
-        addr.0
+impl std::ops::Add<u16> for Addr {
+    type Output = Self; 
+    fn add(self, rhs: u16) -> Self::Output {
+        debug_assert!(self.0 + rhs < 0x1000);
+        Addr(self.0 + rhs)
+    }
+}
+
+impl std::ops::AddAssign<u16> for Addr {
+    fn add_assign(&mut self, rhs: u16) {
+        debug_assert!(self.0 + rhs < 0x1000);
+        self.0 += rhs
+    }
+}
+
+impl std::ops::Sub<u16> for Addr {
+    type Output = Self; 
+    fn sub(self, rhs: u16) -> Self::Output {
+        debug_assert!(self.0 >= rhs);
+        Addr(self.0 - rhs)
+    }
+}
+
+impl std::ops::SubAssign<u16> for Addr {
+    fn sub_assign(&mut self, rhs: u16) {
+        debug_assert!(self.0 >= rhs);
+        self.0 -= rhs
     }
 }
 

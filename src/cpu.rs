@@ -41,7 +41,9 @@ pub struct CPU {
 
 impl CPU {
     fn step(&mut self, ram: &mut ram::Mem, stack: &mut stack::Mem) {
-
+        
+        let hi = ram[self.pc];
+        let lo = ram[self.pc + 1];
 
     }
 }
