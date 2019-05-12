@@ -12,12 +12,6 @@ impl From<u8> for Reg {
     }
 }
 
-impl From<Reg> for u8 {
-    fn from(reg: Reg) -> Self {
-        reg.0
-    }
-}
-
 #[derive(Debug, Default)]
 pub struct CPU {
     /// Program counter
@@ -37,4 +31,17 @@ pub struct CPU {
 
     /// General purpose registers
     pub reg: [u8; 16],
+}
+
+impl std::ops::Index<Reg> for CPU {
+    type Output = u8;
+    fn index(&self, idx: Reg) -> &Self::Output {
+        &self.reg[idx.0 as usize]
+    }
+}
+
+impl std::ops::IndexMut<Reg> for CPU {
+    fn index_mut(&mut self, idx: Reg) -> &mut Self::Output {
+        &mut self.reg[idx.0 as usize]
+    }
 }

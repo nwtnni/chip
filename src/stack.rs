@@ -4,15 +4,15 @@ use crate::ram;
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Addr(u8);
 
-impl std::ops::AddAssign<u8> for Addr {
-    fn add_assign(&mut self, rhs: u8) {
-        self.0 += rhs
+impl Addr {
+    pub fn dec(&mut self) {
+        debug_assert!(self.0 > 0x00, "Stack address cannot be below 0x00");
+        self.0 -= 1
     }
-}
 
-impl std::ops::SubAssign<u8> for Addr {
-    fn sub_assign(&mut self, rhs: u8) {
-        self.0 -= rhs
+    pub fn inc(&mut self) {
+        debug_assert!(self.0 < 0x0F, "Stack address cannot be above 0x0F");
+        self.0 += 1
     }
 }
 
