@@ -1,7 +1,7 @@
 use crate::ram;
 
 /// 8-bit stack address
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Addr(u8);
 
 impl std::ops::AddAssign<u8> for Addr {

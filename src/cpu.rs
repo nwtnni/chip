@@ -1,4 +1,3 @@
-use crate::asm;
 use crate::ram;
 use crate::stack;
 
@@ -19,7 +18,7 @@ impl From<Reg> for u8 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct CPU {
     /// Program counter
     pub pc: ram::Addr,

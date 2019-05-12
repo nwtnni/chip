@@ -2,6 +2,12 @@
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Addr(u16);
 
+impl Default for Addr {
+    fn default() -> Self {
+        Addr(0x0200)
+    }
+}
+
 impl From<u16> for Addr {
     fn from(addr: u16) -> Self {
         Addr(addr & 0x0FFF)
