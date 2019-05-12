@@ -65,6 +65,33 @@ impl Chip {
         | XOR(x, y) => {
             self.cpu[x] ^= self.cpu[y];
         }
+        | ADDR(x, y) => {
+            let z = self.cpu[x] as u16 + self.cpu[y] as u16;
+            self.cpu[cpu::VF] = if z > 0xFF { 1 } else { 0 };
+            self.cpu[x] = z as u8;
+        }
+        | SUB(x, y) => {
+            let vx = self.cpu[x];
+            let vy = self.cpu[y];
+            self.cpu[cpu::VF] = if vx > vy { 1 } else { 0 };
+            self.cpu[x] = vx.wrapping_sub(vy);
+        }
+        | SHR(x) => {
+            let vx = self.cpu[x];
+            self.cpu[cpu::VF] = vx & 0x01;
+            self.cpu[x] = vx >> 0x01;
+        }
+        | SUBN(x, y) => {
+            let vx = self.cpu[x];
+            let vy = self.cpu[y];
+            self.cpu[cpu::VF] = if vy > vx { 1 } else { 0 };
+            self.cpu[x] = vy.wrapping_sub(vx);
+        }
+        | SHL(x) => {
+            let vx = self.cpu[x];
+            self.cpu[cpu::VF] = if vx & 0x80 != 0x00 { 1 } else { 0 };
+            self.cpu[x] = vx << 0x01;
+        }
         | _ => unimplemented!(),
         }
     }

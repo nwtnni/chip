@@ -52,13 +52,13 @@ pub enum Asm {
     SUB(cpu::Reg, cpu::Reg),
 
     /// Shift right by one
-    SHR(cpu::Reg, cpu::Reg),
+    SHR(cpu::Reg),
 
     /// Destructive right-to-left register subtraction
     SUBN(cpu::Reg, cpu::Reg),
 
     /// Shift left by one
-    SHL(cpu::Reg, cpu::Reg),
+    SHL(cpu::Reg),
 
     /// Skip next instruction if register contents are not equal
     SNER(cpu::Reg, cpu::Reg),
@@ -133,9 +133,9 @@ impl From<u16> for Asm {
         | (0x8,   x,   y, 0x3) => Asm::XOR(x.into(), y.into()),
         | (0x8,   x,   y, 0x4) => Asm::ADDR(x.into(), y.into()),
         | (0x8,   x,   y, 0x5) => Asm::SUB(x.into(), y.into()),
-        | (0x8,   x,   y, 0x6) => Asm::SHR(x.into(), y.into()),
+        | (0x8,   x,   _, 0x6) => Asm::SHR(x.into()),
         | (0x8,   x,   y, 0x7) => Asm::SUBN(x.into(), y.into()),
-        | (0x8,   x,   y, 0xE) => Asm::SHL(x.into(), y.into()),
+        | (0x8,   x,   _, 0xE) => Asm::SHL(x.into()),
         | (0x9,   x,   y, 0x0) => Asm::SNER(x.into(), y.into()),
         | (0xA,   _,   _,   _) => Asm::LDI(op.into()),
         | (0xB,   _,   _,   _) => Asm::JO(op.into()),

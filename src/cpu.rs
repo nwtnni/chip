@@ -5,6 +5,8 @@ use crate::stack;
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct Reg(u8);
 
+pub const VF: Reg = Reg(0x0F);
+
 impl From<u8> for Reg {
     fn from(reg: u8) -> Self {
         debug_assert!(reg < 0x10);
