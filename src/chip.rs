@@ -92,6 +92,39 @@ impl Chip {
             self.cpu[cpu::VF] = if vx & 0x80 != 0x00 { 1 } else { 0 };
             self.cpu[x] = vx << 0x01;
         }
+        | LDI(addr) => {
+            self.cpu.idx = addr;
+        }
+        | JO(addr) => {
+            self.cpu.pc = addr + self.cpu[cpu::V0] as u16;
+        }
+        | RND(x, kk) => {
+            self.cpu[x] = rand::random::<u8>() & kk;
+        }
+        | DRW(x, y, n) => {
+            unimplemented!()
+        }
+        | SKP(x) => {
+            unimplemented!() 
+        }
+        | SKNP(x) => {
+            unimplemented!() 
+        }
+        | LDTR(x) => {
+            self.cpu[x] = self.cpu.dt;
+        }
+        | LDK(x) => {
+            unimplemented!() 
+        }
+        | LDRT(x) => {
+            self.cpu.dt = self.cpu[x];
+        }
+        | LDRS(x) => {
+            self.cpu.st = self.cpu[x];
+        }
+        | ADDI(x) => {
+            self.cpu.idx += self.cpu[x] as u16;
+        }
         | _ => unimplemented!(),
         }
     }

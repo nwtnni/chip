@@ -5,6 +5,7 @@ use crate::stack;
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct Reg(u8);
 
+pub const V0: Reg = Reg(0x00);
 pub const VF: Reg = Reg(0x0F);
 
 impl From<u8> for Reg {
@@ -29,7 +30,7 @@ pub struct CPU {
     pub dt: u8,
 
     /// Index register
-    pub idx: u16, 
+    pub idx: ram::Addr, 
 
     /// General purpose registers
     pub reg: [u8; 16],
