@@ -22,35 +22,20 @@ impl From<Reg> for u8 {
 #[derive(Debug)]
 pub struct CPU {
     /// Program counter
-    pc: ram::Addr,
+    pub pc: ram::Addr,
 
     /// Stack pointer
-    sp: stack::Addr, 
+    pub sp: stack::Addr, 
 
     /// Sound timer
-    st: u8,
+    pub st: u8,
 
     /// Delay timer
-    dt: u8,
+    pub dt: u8,
 
     /// Index register
-    idx: u16, 
+    pub idx: u16, 
 
     /// General purpose registers
-    reg: [u8; 16],
-}
-
-impl CPU {
-    fn step(&mut self, ram: &mut ram::Mem, stack: &mut stack::Mem) {
-
-        let hi = ram[self.pc] as u16;
-        let lo = ram[self.pc + 1] as u16;
-        let op = asm::Asm::from(hi << 8 | lo);
-
-        self.pc += 2;
-
-        match op {
-        | _ => unimplemented!(),
-        }
-    }
+    pub reg: [u8; 16],
 }
