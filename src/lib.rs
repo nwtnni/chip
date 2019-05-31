@@ -1,6 +1,8 @@
-pub mod chip;
+mod chip;
 mod cpu;
 mod display;
 mod ram;
-pub mod asm;
+mod asm;
 mod stack;
+
+pub use chip::Chip;

@@ -16,6 +16,20 @@ pub struct Chip {
 
 impl Chip {
 
+    pub fn new<B>(program: B) -> Self where B: IntoIterator<Item = u8> {
+        Chip {
+            cpu: cpu::CPU::default(),
+            ram: ram::Mem::new(program),
+            key: None,
+            stack: stack::Mem::default(),
+            display: display::Display::default(),
+        }
+    }
+
+    pub fn clear_key(&mut self) {
+        self.key.take();
+    }
+
     pub fn set_key(&mut self, event: event::Key) {
         use event::Key::*;
         self.key = match event {
@@ -197,9 +211,6 @@ impl Chip {
             self.cpu.idx += x as u16 + 1;
         }
         };
-
-        // Clear last registered keypress
-        self.key.take();
     }
 }
 

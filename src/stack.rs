@@ -17,6 +17,7 @@ impl Addr {
 }
 
 /// 64-byte stack memory
+#[derive(Copy, Clone, Debug, Default)]
 pub struct Mem([ram::Addr; 16]);
 
 impl std::ops::Index<Addr> for Mem {

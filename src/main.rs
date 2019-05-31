@@ -1,14 +1,32 @@
+use std::io::Write;
+
+use termion::event::{Event, Key};
+use termion::input::TermRead;
+use termion::raw::IntoRawMode;
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = std::env::args().collect::<Vec<_>>();
     let path = &args[1];
     let file = std::fs::read(path)?;
-    let mut iter = file.iter().peekable();
+    let mut chip = chip::Chip::new(file);
 
-    while iter.peek().is_some() {
-        let hi = *iter.next().unwrap();
-        let lo = *iter.next().unwrap();
-        let op = chip::asm::Asm::from(((hi as u16) << 8) | (lo as u16));
-        println!("{:?}", op);
+    let stdin = termion::async_stdin();
+    let mut stdout = std::io::stdout().into_raw_mode()?;
+    let mut stream = stdin.events();
+
+    write!(stdout, "{}", chip)?;
+
+    loop {
+        match stream.next() {
+        | Some(Ok(Event::Key(Key::Esc))) => break,
+        | Some(Ok(Event::Key(key))) => chip.set_key(key),
+        | _ => chip.clear_key(),
+        }
+
+        chip.step();
+
+        write!(stdout, "{}", chip)?;
+        stdout.flush()?;
     }
 
     Ok(())

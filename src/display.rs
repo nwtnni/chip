@@ -7,7 +7,7 @@ pub const H: u8 = 32;
 /// Leftmost bit for masking pixels
 const MSB: u64 = 0x8000_0000_0000_0000;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Display {
     grid: [u64; H as usize],
     draw: std::cell::Cell<bool>,
