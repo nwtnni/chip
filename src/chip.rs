@@ -8,10 +8,13 @@ pub struct Chip {
     cpu: cpu::CPU,
     ram: ram::Mem,
     stack: stack::Mem,
+    display: display::Display,
 }
 
 impl Chip {
     fn step(&mut self) {
+
+        println!("{}", self.display);
 
         let hi = self.ram[self.cpu.pc] as u16;
         let lo = self.ram[self.cpu.pc + 1] as u16;
@@ -22,7 +25,9 @@ impl Chip {
         use asm::Asm::*;
 
         match op {
-        | CLS => unimplemented!(),
+        | CLS => {
+            self.display.clear();
+        }
         | RET => {
             self.cpu.sp.dec();
             self.cpu.pc = self.stack[self.cpu.sp];
@@ -102,7 +107,16 @@ impl Chip {
             self.cpu[x] = rand::random::<u8>() & kk;
         }
         | DRW(x, y, n) => {
-            unimplemented!()
+            self.cpu[cpu::VF] = 0;
+            let vx = self.cpu[x];
+            let vy = self.cpu[y];
+            for dy in 0..n {
+                let mut line = self.ram[self.cpu.idx + dy as u16];
+                for dx in 0..8 {
+                    if line & 0x80 > 0 { self.cpu[cpu::VF] |= self.display.toggle(vx + dx, vy + dy); }
+                    line <<= 1;
+                }
+            }
         }
         | SKP(x) => {
             unimplemented!() 
