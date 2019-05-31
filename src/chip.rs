@@ -30,10 +30,6 @@ impl Chip {
         self.cpu.dt = self.cpu.dt.saturating_sub(1);
     }
 
-    pub fn clear_key(&mut self) {
-        self.key.take();
-    }
-
     pub fn set_key(&mut self, event: event::Key) {
         use event::Key::*;
         self.key = match event {
@@ -163,13 +159,13 @@ impl Chip {
             }
         }
         | SKP(x) => {
-            match self.key {
+            match self.key.take() {
             | Some(k) if k == self.cpu[x] => { self.cpu.pc += 2; },
             | _ => (),
             }
         }
         | SKNP(x) => {
-            match self.key {
+            match self.key.take() {
             | None => { self.cpu.pc += 2; },
             | Some(k) if k != self.cpu[x] => { self.cpu.pc += 2; },
             | _ => (),
@@ -179,9 +175,9 @@ impl Chip {
             self.cpu[x] = self.cpu.dt;
         }
         | LDK(x) => {
-            match self.key {
+            match self.key.take() {
             | None => { self.cpu.pc -= 2; }
-            | Some(k) => self.cpu[x] = k,
+            | Some(k) => { self.cpu[x] = k },
             }
         }
         | LDRT(x) => {

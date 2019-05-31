@@ -44,7 +44,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         match stream.next() {
         | Some(Ok(Event::Key(Key::Esc))) => break,
         | Some(Ok(Event::Key(key))) => chip.set_key(key),
-        | _ => chip.clear_key(),
+        | _ => (),
         }
 
         if std::time::Instant::now() - timer > DELAY {
