@@ -1,3 +1,5 @@
+use termion::event;
+
 use crate::cpu;
 use crate::asm;
 use crate::ram;
@@ -7,18 +9,44 @@ use crate::display;
 pub struct Chip {
     cpu: cpu::CPU,
     ram: ram::Mem,
+    key: Option<u8>,
     stack: stack::Mem,
     display: display::Display,
 }
 
 impl Chip {
-    fn step(&mut self) {
+
+    pub fn set_key(&mut self, event: event::Key) {
+        use event::Key::*;
+        self.key = match event {
+        | Char('1') => Some(0x01),
+        | Char('2') => Some(0x02),
+        | Char('3') => Some(0x03),
+        | Char('4') => Some(0x0C),
+        | Char('q') => Some(0x04),
+        | Char('w') => Some(0x05),
+        | Char('e') => Some(0x06),
+        | Char('r') => Some(0x0D),
+        | Char('a') => Some(0x07),
+        | Char('s') => Some(0x08),
+        | Char('d') => Some(0x09),
+        | Char('f') => Some(0x0E),
+        | Char('z') => Some(0x0A),
+        | Char('x') => Some(0x00),
+        | Char('c') => Some(0x0B),
+        | Char('v') => Some(0x0F),
+        | _ => None,
+        };
+    }
+
+    pub fn step(&mut self) {
 
         let hi = self.ram[self.cpu.pc] as u16;
         let lo = self.ram[self.cpu.pc + 1] as u16;
         let op = asm::Asm::from(hi << 8 | lo);
 
         self.cpu.pc += 2;
+        self.key.take();
 
         use asm::Asm::*;
 
@@ -117,10 +145,17 @@ impl Chip {
             }
         }
         | SKP(x) => {
-            unimplemented!() 
+            match self.key {
+            | Some(k) if k == self.cpu[x] => { self.cpu.pc += 2; },
+            | _ => (),
+            }
         }
         | SKNP(x) => {
-            unimplemented!() 
+            match self.key {
+            | None => { self.cpu.pc += 2; },
+            | Some(k) if k != self.cpu[x] => { self.cpu.pc += 2; },
+            | _ => (),
+            }
         }
         | LDTR(x) => {
             self.cpu[x] = self.cpu.dt;
