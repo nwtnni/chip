@@ -9,14 +9,31 @@ const MSB: u64 = 0x8000_0000_0000_0000;
 
 #[derive(Clone, Debug, Default)]
 pub struct Display {
+    /// Vertical offset
+    dy: u16,
+
+    /// Horizontal offset
+    dx: u16,
+
+    /// Pixel grid
     grid: [u64; H as usize],
-    draw: std::cell::Cell<bool>,
+
+    /// Dirty pixels
+    dirt: std::cell::RefCell<Vec<(u8, u8)>>,
 }
 
 impl Display {
     pub fn clear(&mut self) {
-        self.grid.iter_mut().for_each(|p| *p = 0);
-        self.draw.set(true);
+        let mut dirt = self.dirt.borrow_mut();
+        dirt.clear();
+        for (y, row) in self.grid.iter_mut().enumerate() {
+            let mut col = MSB;
+            for x in 0..W {
+                if *row & col > 0 { dirt.push((x, y as u8)); }
+                col >>= 1;
+            }
+            *row = 0;
+        }
     }
 
     pub fn toggle(&mut self, x: u8, y: u8) -> u8 {
@@ -24,24 +41,19 @@ impl Display {
         let bit = MSB >> x;
         let hit = self.grid[y as usize] & bit > 0;
         self.grid[y as usize] ^= bit;
-        self.draw.set(true);
+        self.dirt.borrow_mut().push((x, y));
         hit as u8
     }
 }
 
 impl std::fmt::Display for Display {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        if !self.draw.get() { return Ok(()) }
-        write!(fmt, "{}", termion::clear::All)?;
-        for row in &self.grid {
-            let mut col = MSB;
-            for _ in 0..W {
-                write!(fmt, "{}", if row & col > 0 { "█" } else { " " })?;
-                col >>= 1;
-            }
-            write!(fmt, "\r\n")?;
+        for (x, y) in self.dirt.borrow_mut().drain(..) {
+            let set = (self.grid[y as usize] & (MSB >> x)) > 0;
+            let bit = if set { '█' } else { ' ' };
+            let go = termion::cursor::Goto(x as u16 + self.dx, y as u16 + self.dy);
+            write!(fmt, "{}{}", go, bit)?;
         }
-        self.draw.set(false);
         Ok(())
     }
 }

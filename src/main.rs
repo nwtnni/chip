@@ -1,5 +1,7 @@
 use std::io::Write;
 
+use termion::cursor;
+use termion::clear;
 use termion::event::{Event, Key};
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
@@ -14,7 +16,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut stdout = std::io::stdout().into_raw_mode()?;
     let mut stream = stdin.events();
 
-    write!(stdout, "{}", chip)?;
+    write!(stdout, "{}{}", clear::All, chip)?;
 
     loop {
         match stream.next() {
@@ -29,5 +31,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         stdout.flush()?;
     }
 
+    write!(stdout, "{}{}", clear::All, cursor::Goto(0, 0))?;
     Ok(())
 }
