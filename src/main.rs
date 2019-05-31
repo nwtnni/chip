@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut stdout = std::io::stdout().into_raw_mode()?;
     let mut stream = stdin.events();
 
-    write!(stdout, "{}", clear::All)?;
+    write!(stdout, "{}{}", cursor::Hide, clear::All)?;
     chip.draw(&mut stdout)?;
 
     loop {
@@ -40,6 +40,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         stdout.flush()?;
     }
 
-    write!(stdout, "{}{}", clear::All, cursor::Goto(0, 0))?;
+    write!(stdout, "{}{}{}", clear::All, cursor::Goto(0, 0), cursor::Show)?;
     Ok(())
 }
