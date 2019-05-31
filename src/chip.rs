@@ -14,8 +14,6 @@ pub struct Chip {
 impl Chip {
     fn step(&mut self) {
 
-        println!("{}", self.display);
-
         let hi = self.ram[self.cpu.pc] as u16;
         let lo = self.ram[self.cpu.pc + 1] as u16;
         let op = asm::Asm::from(hi << 8 | lo);
@@ -141,5 +139,11 @@ impl Chip {
         }
         | _ => unimplemented!(),
         }
+    }
+}
+
+impl std::fmt::Display for Chip {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(fmt, "{}", self.display)
     }
 }
