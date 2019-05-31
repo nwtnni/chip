@@ -25,6 +25,11 @@ impl Chip {
         }
     }
 
+    pub fn tick(&mut self) {
+        self.cpu.st = self.cpu.st.saturating_sub(1);
+        self.cpu.dt = self.cpu.dt.saturating_sub(1);
+    }
+
     pub fn clear_key(&mut self) {
         self.key.take();
     }
