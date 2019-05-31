@@ -46,11 +46,11 @@ impl Chip {
         let op = asm::Asm::from(hi << 8 | lo);
 
         self.cpu.pc += 2;
-        self.key.take();
 
         use asm::Asm::*;
 
         match op {
+        | SYS(_) => (), // Unsupported
         | CLS => {
             self.display.clear();
         }
@@ -161,7 +161,10 @@ impl Chip {
             self.cpu[x] = self.cpu.dt;
         }
         | LDK(x) => {
-            unimplemented!() 
+            match self.key {
+            | None => { self.cpu.pc -= 2; }
+            | Some(k) => self.cpu[x] = k,
+            }
         }
         | LDRT(x) => {
             self.cpu.dt = self.cpu[x];
@@ -172,8 +175,31 @@ impl Chip {
         | ADDI(x) => {
             self.cpu.idx += self.cpu[x] as u16;
         }
-        | _ => unimplemented!(),
+        | LDS(x) => {
+            self.cpu.idx = ram::FONT_OFFSET + (self.cpu[x] as u16 * 5);
         }
+        | LDB(x) => {
+            let vx = self.cpu[x];
+            self.ram[self.cpu.idx + 0] = (vx / 100) % 10;
+            self.ram[self.cpu.idx + 1] = (vx / 10) % 10;
+            self.ram[self.cpu.idx + 2] = (vx / 1) % 10;
+        }
+        | WR(x) => {
+            for offset in 0..=x {
+                self.ram[self.cpu.idx + offset as u16] = self.cpu[cpu::V0 + offset]; 
+            }
+            self.cpu.idx += x as u16 + 1;
+        }
+        | RD(x) => {
+            for offset in 0..=x {
+                self.cpu[cpu::V0 + offset] = self.ram[self.cpu.idx + offset as u16];
+            }
+            self.cpu.idx += x as u16 + 1;
+        }
+        };
+
+        // Clear last registered keypress
+        self.key.take();
     }
 }
 

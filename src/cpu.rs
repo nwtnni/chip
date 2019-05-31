@@ -15,6 +15,13 @@ impl From<u8> for Reg {
     }
 }
 
+impl std::ops::Add<u8> for Reg {
+    type Output = Reg;
+    fn add(self, rhs: u8) -> Self::Output {
+        Reg(self.0 + rhs)
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct CPU {
     /// Program counter

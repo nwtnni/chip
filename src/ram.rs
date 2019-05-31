@@ -44,6 +44,8 @@ impl std::ops::SubAssign<u16> for Addr {
     }
 }
 
+pub const FONT_OFFSET: Addr = Addr(0x00_0000);
+
 // https://github.com/wernsey/chip8/blob/a2310220ce5c205c74d85bc69125339641ee838a/chip8.c#L56-L74
 const FONT: [u8; 80] = [
     /* 0 */ 0xF0, 0x90, 0x90, 0x90, 0xF0,

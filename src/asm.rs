@@ -102,11 +102,11 @@ pub enum Asm {
     /// Store BCD representation of register in memory locations I, I + 1, I + 2
     LDB(cpu::Reg),
 
-    /// Write registers V0 through Reg in memory starting at location I
-    WR(cpu::Reg),
+    /// Write registers V0 through Vx in memory starting at location I
+    WR(u8),
 
-    /// Read registers V0 through Reg from memory starting at location I
-    RD(cpu::Reg),
+    /// Read registers V0 through Vx from memory starting at location I
+    RD(u8),
 }
 
 impl From<u16> for Asm {
