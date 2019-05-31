@@ -50,11 +50,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if std::time::Instant::now() - timer > DELAY {
             timer = std::time::Instant::now();
             chip.tick();
+            chip.draw(&mut stdout)?;
+            stdout.flush()?;
         }
 
         chip.step();
-        chip.draw(&mut stdout)?;
-        stdout.flush()?;
         std::thread::sleep(pause);
     }
 

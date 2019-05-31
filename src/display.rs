@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 /// Width
 pub const W: u8 = 64;
 
@@ -13,7 +15,7 @@ pub struct Display {
     grid: [u64; H as usize],
 
     /// Dirty pixels
-    dirt: Vec<(u8, u8)>,
+    dirt: HashSet<(u8, u8)>,
 }
 
 impl Display {
@@ -22,7 +24,7 @@ impl Display {
         for (y, row) in self.grid.iter_mut().enumerate() {
             let mut col = MSB;
             for x in 0..W {
-                if *row & col > 0 { self.dirt.push((x, y as u8)); }
+                if *row & col > 0 { self.dirt.insert((x, y as u8)); }
                 col >>= 1;
             }
             *row = 0;
@@ -34,12 +36,12 @@ impl Display {
         let bit = MSB >> x;
         let hit = self.grid[y as usize] & bit > 0;
         self.grid[y as usize] ^= bit;
-        self.dirt.push((x, y));
+        self.dirt.insert((x, y));
         hit as u8
     }
 
     pub fn draw<W: std::io::Write>(&mut self, dx: u16, dy: u16, out: &mut W) -> std::io::Result<()> {
-        for (x, y) in self.dirt.drain(..) {
+        for (x, y) in self.dirt.drain() {
             let set = (self.grid[y as usize] & (MSB >> x)) > 0;
             let bit = if set { '█' } else { ' ' };
             let go = termion::cursor::Goto(x as u16 + dx, y as u16 + dy);
