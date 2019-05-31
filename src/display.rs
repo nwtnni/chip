@@ -19,6 +19,7 @@ pub struct Display {
 }
 
 impl Display {
+    /// Blank out the display.
     pub fn clear(&mut self) {
         self.dirt.clear();
         for (y, row) in self.grid.iter_mut().enumerate() {
@@ -31,6 +32,7 @@ impl Display {
         }
     }
 
+    /// Toggle the pixel at coordinates `(x, y)`.
     pub fn toggle(&mut self, x: u8, y: u8) -> u8 {
         let (x, y) = (x % W, y % H);
         let bit = MSB >> x;
@@ -40,6 +42,7 @@ impl Display {
         hit as u8
     }
 
+    /// Draw the display at offset `(dx, dy)`.
     pub fn draw<W: std::io::Write>(&mut self, dx: u16, dy: u16, out: &mut W) -> std::io::Result<()> {
         for (x, y) in self.dirt.drain() {
             let set = (self.grid[y as usize] & (MSB >> x)) > 0;

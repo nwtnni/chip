@@ -1,4 +1,4 @@
-/// 12-bit memory address
+/// 12-bit memory address.
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Addr(u16);
 
@@ -44,9 +44,13 @@ impl std::ops::SubAssign<u16> for Addr {
     }
 }
 
+/// Memory address where font data is stored.
 pub const FONT_OFFSET: Addr = Addr(0x00_0000);
 
-// https://github.com/wernsey/chip8/blob/a2310220ce5c205c74d85bc69125339641ee838a/chip8.c#L56-L74
+/// CHIP-8 built-in binary font data.
+/// Taken from [@wernsey][0].
+///
+/// [0]: https://github.com/wernsey/chip8/blob/a2310220ce5c205c74d85bc69125339641ee838a/chip8.c#L56-L74
 const FONT: [u8; 80] = [
     /* 0 */ 0xF0, 0x90, 0x90, 0x90, 0xF0,
     /* 1 */ 0x20, 0x60, 0x20, 0x20, 0x70,
@@ -66,6 +70,7 @@ const FONT: [u8; 80] = [
     /* F */ 0xF0, 0x80, 0xF0, 0x80, 0x80,
 ];
 
+/// 4096-byte random access memory.
 #[derive(Clone)]
 pub struct Mem(Box<[u8; 4096]>);
 

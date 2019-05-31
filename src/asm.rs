@@ -1,6 +1,7 @@
 use crate::cpu;
 use crate::ram;
 
+/// CHIP-8 opcodes.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Asm {
     /// Jump to machine code routine at address

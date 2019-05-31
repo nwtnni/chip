@@ -6,15 +6,26 @@ use crate::ram;
 use crate::stack;
 use crate::display;
 
+/// Main emulator logic.
 pub struct Chip {
+    /// CHIP-8 CPU
     cpu: cpu::CPU,
+
+    /// Random access memory
     ram: ram::Mem,
+
+    /// Last-pressed key
     key: Option<u8>,
+
+    /// Stack memory
     stack: stack::Mem,
+
+    /// Terminal-backed display
     display: display::Display,
 }
 
 impl Chip {
+    /// Create a new emulator running `program`.
     pub fn new<B>(program: B) -> Self where B: IntoIterator<Item = u8> {
         Chip {
             cpu: cpu::CPU::default(),
@@ -25,11 +36,13 @@ impl Chip {
         }
     }
 
+    /// Decrement the sound and delay timers.
     pub fn tick(&mut self) {
         self.cpu.st = self.cpu.st.saturating_sub(1);
         self.cpu.dt = self.cpu.dt.saturating_sub(1);
     }
 
+    /// Update the latest pressed key.
     pub fn set_key(&mut self, event: event::Key) {
         use event::Key::*;
         self.key = match event {
@@ -53,6 +66,7 @@ impl Chip {
         };
     }
 
+    /// Execute a single CPU cycle.
     pub fn step(&mut self) {
 
         let hi = self.ram[self.cpu.pc] as u16;
@@ -64,7 +78,7 @@ impl Chip {
         use asm::Asm::*;
 
         match op {
-        | SYS(_) => (), // Unsupported
+        | SYS(_) => (),
         | CLS => {
             self.display.clear();
         }
@@ -213,6 +227,7 @@ impl Chip {
         };
     }
 
+    /// Draw the current display.
     pub fn draw<W: std::io::Write>(&mut self, out: &mut W) -> std::io::Result<()> {
         self.display.draw(0, 0, out)?;
         Ok(())
