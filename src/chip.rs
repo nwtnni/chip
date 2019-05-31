@@ -2,7 +2,7 @@ use crate::cpu;
 use crate::asm;
 use crate::ram;
 use crate::stack;
-use crate::io;
+use crate::display;
 
 pub struct Chip {
     cpu: cpu::CPU,
@@ -22,7 +22,7 @@ impl Chip {
         use asm::Asm::*;
 
         match op {
-        | CLS => io::clear(),
+        | CLS => unimplemented!(),
         | RET => {
             self.cpu.sp.dec();
             self.cpu.pc = self.stack[self.cpu.sp];
