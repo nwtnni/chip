@@ -16,7 +16,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut stdout = std::io::stdout().into_raw_mode()?;
     let mut stream = stdin.events();
 
-    write!(stdout, "{}{}", clear::All, chip)?;
+    write!(stdout, "{}", clear::All)?;
+    chip.draw(&mut stdout)?;
 
     loop {
         match stream.next() {
@@ -26,8 +27,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         chip.step();
-
-        write!(stdout, "{}", chip)?;
+        chip.draw(&mut stdout)?;
         stdout.flush()?;
     }
 

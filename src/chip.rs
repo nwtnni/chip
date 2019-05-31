@@ -15,7 +15,6 @@ pub struct Chip {
 }
 
 impl Chip {
-
     pub fn new<B>(program: B) -> Self where B: IntoIterator<Item = u8> {
         Chip {
             cpu: cpu::CPU::default(),
@@ -212,10 +211,9 @@ impl Chip {
         }
         };
     }
-}
 
-impl std::fmt::Display for Chip {
-    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(fmt, "{}", self.display)
+    pub fn draw<W: std::io::Write>(&mut self, out: &mut W) -> std::io::Result<()> {
+        self.display.draw(0, 0, out)?;
+        Ok(())
     }
 }
