@@ -22,6 +22,12 @@ impl std::ops::Add<u8> for Reg {
     }
 }
 
+impl std::fmt::Display for Reg {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(fmt, "V{:X}", self.0)
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct CPU {
     /// Program counter

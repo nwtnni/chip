@@ -44,6 +44,12 @@ impl std::ops::SubAssign<u16> for Addr {
     }
 }
 
+impl std::fmt::Display for Addr {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(fmt, "{:#05X}", self.0)
+    }
+}
+
 /// Memory address where font data is stored.
 pub const FONT_OFFSET: Addr = Addr(0x00_0000);
 

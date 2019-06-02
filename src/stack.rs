@@ -16,6 +16,12 @@ impl Addr {
     }
 }
 
+impl std::fmt::Display for Addr {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(fmt, "{:#X}", self.0)
+    }
+}
+
 /// 64-byte stack memory
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Mem([ram::Addr; 16]);
