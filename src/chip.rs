@@ -1,3 +1,4 @@
+use termion::cursor;
 use termion::event;
 
 use crate::cpu;
@@ -228,8 +229,34 @@ impl Chip {
     }
 
     /// Draw the current display.
-    pub fn draw<W: std::io::Write>(&mut self, out: &mut W) -> std::io::Result<()> {
-        self.display.draw(0, 0, out)?;
+    pub fn draw<W: std::io::Write>(&mut self, dx: u16, dy: u16, out: &mut W) -> std::io::Result<()> {
+        self.display.draw(dx, dy, out)?;
+
+        let dy = dy + display::H as u16 + 1;
+
+        for offset in 0x0..=0xF {
+            if offset % 4 == 0 {
+                let dx = dx + 4;
+                let dy = dy + (offset as u16 / 2); 
+                write!(out, "{}", cursor::Goto(dx, dy))?;
+            }
+            let x = cpu::V0 + offset;
+            write!(out, "{}: {:#04X}        ", x, self.cpu[x])?;
+        }
+
+        let dy = dy + 8;
+
+        write!(
+            out,
+            "{}   PC: {}    SP: {}    ST: {:#04X}    DT: {:#04X}    I: {}",
+            cursor::Goto(dx, dy),
+            self.cpu.pc,
+            self.cpu.sp,
+            self.cpu.st,
+            self.cpu.dt,
+            self.cpu.idx
+        )?;
+
         Ok(())
     }
 }

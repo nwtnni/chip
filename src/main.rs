@@ -51,7 +51,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
     write!(stdout, "{}{}", cursor::Hide, clear::All)?;
-    chip.draw(&mut stdout)?;
+    chip.draw(0, 0, &mut stdout)?;
 
     loop {
 
@@ -75,7 +75,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if std::time::Instant::now() - timer > TICK {
             timer = std::time::Instant::now();
             chip.tick();
-            chip.draw(&mut stdout)?;
+            chip.draw(0, 0, &mut stdout)?;
             stdout.flush()?;
         }
 
