@@ -110,50 +110,46 @@ pub enum Asm {
     RD(u8),
 }
 
-impl From<u16> for Asm {
-    fn from(op: u16) -> Self {
-
-        macro_rules! nibble {
-            ($n:expr) => ((op >> (4 * $n) & 0x000F) as u8)
-        }
-
-        match (nibble!(3), nibble!(2), nibble!(1), nibble!(0)) {
-        | (0x0, 0x0, 0xE, 0x0) => Asm::CLS,
-        | (0x0, 0x0, 0xE, 0xE) => Asm::RET,
-        | (0x0,   _,   _,   _) => Asm::SYS(op.into()),
-        | (0x1,   _,   _,   _) => Asm::JP(op.into()),
-        | (0x2,   _,   _,   _) => Asm::CALL(op.into()),
-        | (0x3,   x,   _,   _) => Asm::SEC(x.into(), op as u8),
-        | (0x4,   x,   _,   _) => Asm::SNEC(x.into(), op as u8),
-        | (0x5,   x,   y, 0x0) => Asm::SER(x.into(), y.into()),
-        | (0x6,   x,   _,   _) => Asm::LDC(x.into(), op as u8),
-        | (0x7,   x,   _,   _) => Asm::ADDC(x.into(), op as u8),
-        | (0x8,   x,   y, 0x0) => Asm::LDR(x.into(), y.into()),
-        | (0x8,   x,   y, 0x1) => Asm::OR(x.into(), y.into()),
-        | (0x8,   x,   y, 0x2) => Asm::AND(x.into(), y.into()),
-        | (0x8,   x,   y, 0x3) => Asm::XOR(x.into(), y.into()),
-        | (0x8,   x,   y, 0x4) => Asm::ADDR(x.into(), y.into()),
-        | (0x8,   x,   y, 0x5) => Asm::SUB(x.into(), y.into()),
-        | (0x8,   x,   _, 0x6) => Asm::SHR(x.into()),
-        | (0x8,   x,   y, 0x7) => Asm::SUBN(x.into(), y.into()),
-        | (0x8,   x,   _, 0xE) => Asm::SHL(x.into()),
-        | (0x9,   x,   y, 0x0) => Asm::SNER(x.into(), y.into()),
-        | (0xA,   _,   _,   _) => Asm::LDI(op.into()),
-        | (0xB,   _,   _,   _) => Asm::JO(op.into()),
-        | (0xC,   x,   _,   _) => Asm::RND(x.into(), op as u8),
-        | (0xD,   x,   y,   n) => Asm::DRW(x.into(), y.into(), n),
-        | (0xE,   x, 0x9, 0xE) => Asm::SKP(x.into()),
-        | (0xE,   x, 0xA, 0x1) => Asm::SKNP(x.into()),
-        | (0xF,   x, 0x0, 0x7) => Asm::LDTR(x.into()),
-        | (0xF,   x, 0x0, 0xA) => Asm::LDK(x.into()),
-        | (0xF,   x, 0x1, 0x5) => Asm::LDRT(x.into()),
-        | (0xF,   x, 0x1, 0x8) => Asm::LDRS(x.into()),
-        | (0xF,   x, 0x1, 0xE) => Asm::ADDI(x.into()),
-        | (0xF,   x, 0x2, 0x9) => Asm::LDS(x.into()),
-        | (0xF,   x, 0x3, 0x3) => Asm::LDB(x.into()),
-        | (0xF,   x, 0x5, 0x5) => Asm::WR(x.into()),
-        | (0xF,   x, 0x6, 0x5) => Asm::RD(x.into()),
-        | _ => panic!("[ASSEMBLY ERROR]: invalid opcode {:x}", op),
+impl Asm {
+    pub fn parse(hi: u8, lo: u8) -> Option<Self> {
+        let op = ((hi as u16) << 8) | (lo as u16);
+        match (hi >> 4, hi & 0xF, lo >> 4, lo & 0xF) {
+        | (0x0, 0x0, 0xE, 0x0) => Some(Asm::CLS),
+        | (0x0, 0x0, 0xE, 0xE) => Some(Asm::RET),
+        | (0x0,   _,   _,   _) => Some(Asm::SYS(op.into())),
+        | (0x1,   _,   _,   _) => Some(Asm::JP(op.into())),
+        | (0x2,   _,   _,   _) => Some(Asm::CALL(op.into())),
+        | (0x3,   x,   _,   _) => Some(Asm::SEC(x.into(), op as u8)),
+        | (0x4,   x,   _,   _) => Some(Asm::SNEC(x.into(), op as u8)),
+        | (0x5,   x,   y, 0x0) => Some(Asm::SER(x.into(), y.into())),
+        | (0x6,   x,   _,   _) => Some(Asm::LDC(x.into(), op as u8)),
+        | (0x7,   x,   _,   _) => Some(Asm::ADDC(x.into(), op as u8)),
+        | (0x8,   x,   y, 0x0) => Some(Asm::LDR(x.into(), y.into())),
+        | (0x8,   x,   y, 0x1) => Some(Asm::OR(x.into(), y.into())),
+        | (0x8,   x,   y, 0x2) => Some(Asm::AND(x.into(), y.into())),
+        | (0x8,   x,   y, 0x3) => Some(Asm::XOR(x.into(), y.into())),
+        | (0x8,   x,   y, 0x4) => Some(Asm::ADDR(x.into(), y.into())),
+        | (0x8,   x,   y, 0x5) => Some(Asm::SUB(x.into(), y.into())),
+        | (0x8,   x,   _, 0x6) => Some(Asm::SHR(x.into())),
+        | (0x8,   x,   y, 0x7) => Some(Asm::SUBN(x.into(), y.into())),
+        | (0x8,   x,   _, 0xE) => Some(Asm::SHL(x.into())),
+        | (0x9,   x,   y, 0x0) => Some(Asm::SNER(x.into(), y.into())),
+        | (0xA,   _,   _,   _) => Some(Asm::LDI(op.into())),
+        | (0xB,   _,   _,   _) => Some(Asm::JO(op.into())),
+        | (0xC,   x,   _,   _) => Some(Asm::RND(x.into(), op as u8)),
+        | (0xD,   x,   y,   n) => Some(Asm::DRW(x.into(), y.into(), n)),
+        | (0xE,   x, 0x9, 0xE) => Some(Asm::SKP(x.into())),
+        | (0xE,   x, 0xA, 0x1) => Some(Asm::SKNP(x.into())),
+        | (0xF,   x, 0x0, 0x7) => Some(Asm::LDTR(x.into())),
+        | (0xF,   x, 0x0, 0xA) => Some(Asm::LDK(x.into())),
+        | (0xF,   x, 0x1, 0x5) => Some(Asm::LDRT(x.into())),
+        | (0xF,   x, 0x1, 0x8) => Some(Asm::LDRS(x.into())),
+        | (0xF,   x, 0x1, 0xE) => Some(Asm::ADDI(x.into())),
+        | (0xF,   x, 0x2, 0x9) => Some(Asm::LDS(x.into())),
+        | (0xF,   x, 0x3, 0x3) => Some(Asm::LDB(x.into())),
+        | (0xF,   x, 0x5, 0x5) => Some(Asm::WR(x.into())),
+        | (0xF,   x, 0x6, 0x5) => Some(Asm::RD(x.into())),
+        | _ => None,
         }
     }
 }

@@ -70,9 +70,9 @@ impl Chip {
     /// Execute a single CPU cycle.
     pub fn step(&mut self) {
 
-        let hi = self.ram[self.cpu.pc] as u16;
-        let lo = self.ram[self.cpu.pc + 1] as u16;
-        let op = asm::Asm::from(hi << 8 | lo);
+        let hi = self.ram[self.cpu.pc];
+        let lo = self.ram[self.cpu.pc + 1];
+        let op = asm::Asm::parse(hi, lo).unwrap();
 
         self.cpu.pc += 2;
 
@@ -232,30 +232,50 @@ impl Chip {
     pub fn draw<W: std::io::Write>(&mut self, dx: u16, dy: u16, out: &mut W) -> std::io::Result<()> {
         self.display.draw(dx, dy, out)?;
 
-        let dy = dy + display::H as u16 + 1;
-
         for offset in 0x0..=0xF {
             if offset % 4 == 0 {
                 let dx = dx + 4;
-                let dy = dy + (offset as u16 / 2); 
+                let dy = dy + display::H as u16 + 1 + (offset as u16 / 2); 
                 write!(out, "{}", cursor::Goto(dx, dy))?;
             }
             let x = cpu::V0 + offset;
             write!(out, "{}: {:#04X}        ", x, self.cpu[x])?;
         }
 
-        let dy = dy + 8;
-
         write!(
             out,
             "{}   PC: {}    SP: {}    ST: {:#04X}    DT: {:#04X}    I: {}",
-            cursor::Goto(dx, dy),
+            cursor::Goto(dx, dy + display::H as u16 + 1 + 8),
             self.cpu.pc,
             self.cpu.sp,
             self.cpu.st,
             self.cpu.dt,
             self.cpu.idx
         )?;
+        
+        let dx = dx + display::W as u16 + 1;
+        let dy = dy + 1;
+
+        for (dy, da) in (-10..=10).enumerate().map(|(y, da)| (y as u16 * 2 + dy, da * 2)) {
+
+            write!(out, "{}", cursor::Goto(dx, dy))?;
+
+            let addr = match self.cpu.pc.offset(da) {
+            | Some(addr) => addr,
+            | None => continue,
+            };
+
+            let op = match asm::Asm::parse(self.ram[addr], self.ram[addr + 1]) {
+            | Some(op) => op,
+            | None => continue,
+            };
+
+            if da == 0 {
+                write!(out, "--> {}: {}          ", addr, op)?;
+            } else {
+                write!(out, "    {}: {}          ", addr, op)?;
+            }
+        }
 
         Ok(())
     }

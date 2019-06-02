@@ -2,6 +2,13 @@
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Addr(u16);
 
+impl Addr {
+    pub fn offset(&self, offset: i32) -> Option<Self> {
+        let sum = self.0 as i32 + offset;
+        if sum < 0 || sum > 0x0FFF { None } else { Some(Addr(sum as u16)) }
+    }
+}
+
 impl Default for Addr {
     fn default() -> Self {
         Addr(0x0200)
