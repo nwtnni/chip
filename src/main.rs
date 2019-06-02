@@ -40,6 +40,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut chip = chip::Chip::new(file);
     let mut timer = time::Instant::now();
+    let restore = chip.clone();
 
     let mut hz = args.hz;
     let mut delay = SECOND / hz;
@@ -63,9 +64,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         | Some(Ok(Event::Key(Key::Char(' ')))) => fuel = if fuel < 0 { 0 } else { -1 },
         | Some(Ok(Event::Key(Key::Char('-')))) => { hz -= 10; delay = SECOND / hz; }
         | Some(Ok(Event::Key(Key::Char('+')))) => { hz += 10; delay = SECOND / hz; }
-        | Some(Ok(Event::Key(Key::Char('n'))))
-        | Some(Ok(Event::Key(Key::Char('>'))))
-        | Some(Ok(Event::Key(Key::Down))) if fuel >= 0 => fuel += 1,
+        | Some(Ok(Event::Key(Key::Char('n')))) if fuel >= 0 => fuel += 1,
+        | Some(Ok(Event::Key(Key::Char('r')))) => {
+            chip = restore.clone();
+            chip.draw(0, 0, &mut stdout)?;
+            stdout.flush()?;
+        },
         | Some(Ok(Event::Key(key))) => chip.set_key(key),
         | _ => (),
         }

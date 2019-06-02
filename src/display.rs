@@ -9,7 +9,7 @@ pub const H: u8 = 32;
 /// Leftmost bit for masking pixels
 const MSB: u64 = 0x8000_0000_0000_0000;
 
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 pub struct Display {
     /// Pixel grid
     grid: [u64; H as usize],
@@ -51,5 +51,14 @@ impl Display {
             write!(out, "{}{}", go, bit)?;
         }
         Ok(())
+    }
+}
+
+impl Default for Display {
+    fn default() -> Self {
+        Display {
+            grid: [0; H as usize],
+            dirt: (0..H).flat_map(|y| (0..W).map(move |x| (x, y))).collect(),
+        }
     }
 }

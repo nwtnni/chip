@@ -28,7 +28,7 @@ impl std::fmt::Display for Reg {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct CPU {
     /// Program counter
     pub pc: ram::Addr,

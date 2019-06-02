@@ -29,6 +29,11 @@ A terminal-based [CHIP-8][7] emulator with ROM game files from [Zophar's Domain]
 ╚═══╩═══╩═══╩═══╝      ╚═══╩═══╩═══╩═══╝
 
       <ESC>       ===>       QUIT
+        +         ===>     HZ += 10
+        -         ===>     HZ -= 10
+        n         ===>       STEP
+        r         ===>       RESET
+     <SPACE>      ===>       PAUSE
 
 ```
 

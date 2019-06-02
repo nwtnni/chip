@@ -8,6 +8,7 @@ use crate::stack;
 use crate::display;
 
 /// Main emulator logic.
+#[derive(Clone)]
 pub struct Chip {
     /// CHIP-8 CPU
     cpu: cpu::CPU,
