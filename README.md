@@ -2,12 +2,18 @@
 
 A terminal-based [CHIP-8][7] emulator with ROM game files from [Zophar's Domain][8].
 
-- Uses the [termion][10] crate for output.
-- Features adjustable CPU frequency, address and opcode types, and bit-based pixel buffer.
+## Features
 
-## Screenshot
+- Adjustable CPU frequency
+- Address and opcode types
+- Bit-based pixel buffer
+- Basic stepping debugger with CPU and assembly view
+- Pause and reset functionality
 
-![Space Invaders screenshot](./resources/invaders.png)
+## Screenshots
+
+![Space Invaders](./resources/invaders.png)
+![Tetris](./resources/tetris.png)
 
 ## Usage
 
