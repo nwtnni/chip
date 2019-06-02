@@ -157,3 +157,45 @@ impl From<u16> for Asm {
         }
     }
 }
+
+impl std::fmt::Display for Asm {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+        | Asm::SYS(addr)    => write!(fmt, "SYS {}", addr),
+        | Asm::CLS          => write!(fmt, "CLS"),
+        | Asm::RET          => write!(fmt, "RET"),
+        | Asm::JP(addr)     => write!(fmt, "JP {}", addr),
+        | Asm::CALL(addr)   => write!(fmt, "CALL {}", addr),
+        | Asm::SEC(x, kk)   => write!(fmt, "SE {}, {:#04X}", x, kk),
+        | Asm::SNEC(x, kk)  => write!(fmt, "SNE {}, {:#04X}", x, kk),
+        | Asm::SER(x, y)    => write!(fmt, "SE {}, {}", x, y),
+        | Asm::LDC(x, kk)   => write!(fmt, "LD {}, {:#04X}", x, kk),
+        | Asm::ADDC(x, kk)  => write!(fmt, "ADD {}, {:#04X}", x, kk),
+        | Asm::LDR(x, y)    => write!(fmt, "LD {}, {}", x, y),
+        | Asm::OR(x, y)     => write!(fmt, "OR {}, {}", x, y),
+        | Asm::AND(x, y)    => write!(fmt, "AND {}, {}", x, y),
+        | Asm::XOR(x, y)    => write!(fmt, "XOR {}, {}", x, y),
+        | Asm::ADDR(x, y)   => write!(fmt, "ADD {}, {}", x, y),
+        | Asm::SUB(x, y)    => write!(fmt, "SUB {}, {}", x, y),
+        | Asm::SHR(x)       => write!(fmt, "SHR {}", x),
+        | Asm::SUBN(x, y)   => write!(fmt, "SUBN {}, {}", x, y),
+        | Asm::SHL(x)       => write!(fmt, "SHL {}", x),
+        | Asm::SNER(x, y)   => write!(fmt, "SNE {}, {}", x, y),
+        | Asm::LDI(addr)    => write!(fmt, "LD I, {}", addr),
+        | Asm::JO(addr)     => write!(fmt, "JP V0, {}", addr),
+        | Asm::RND(x, kk)   => write!(fmt, "RND {}, {}", x, kk),
+        | Asm::DRW(x, y, k) => write!(fmt, "DRW {}, {}, {}", x, y, k),
+        | Asm::SKP(x)       => write!(fmt, "SKP {}", x),
+        | Asm::SKNP(x)      => write!(fmt, "SKNP {}", x),
+        | Asm::LDTR(x)      => write!(fmt, "LD {}, DT", x),
+        | Asm::LDK(x)       => write!(fmt, "LD {}, K", x),
+        | Asm::LDRT(x)      => write!(fmt, "LD DT, {}", x),
+        | Asm::LDRS(x)      => write!(fmt, "LD ST, {}", x),
+        | Asm::ADDI(x)      => write!(fmt, "ADD I, {}", x),
+        | Asm::LDS(x)       => write!(fmt, "LD F, {}", x),
+        | Asm::LDB(x)       => write!(fmt, "LD B, {}", x),
+        | Asm::WR(x)        => write!(fmt, "LD [I], V{:X}", x),
+        | Asm::RD(x)        => write!(fmt, "LD V{:X}, [I]", x),
+        }
+    }
+}
